@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% block base %}
+    <div class="container mt-5">
+        <h2 class="text-center mb-4">Araba Servisi Kayıt Formu</h2>
+        <form>
+            <div class="form-group">
+                <label for="carMake">Araba Markası</label>
+                <input type="text" class="form-control" id="carMake" placeholder="Örneğin: Toyota" required>
+            </div>
+            <div class="form-group">
+                <label for="carModel">Araba Modeli</label>
+                <input type="text" class="form-control" id="carModel" placeholder="Örneğin: Corolla" required>
+            </div>
+            <div class="form-group">
+                <label for="serviceType">Servis Türü</label>
+                <select class="form-control" id="serviceType" required>
+                    <option value="" disabled selected>Seçiniz</option>
+                    <option value="bakim">Bakım</option>
+                    <option value="tamir">Tamir</option>
+                    <option value="lastik">Lastik Değişimi</option>
+                    <option value="diğer">Diğer</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="serviceDate">Servis Tarihi</label>
+                <input type="date" class="form-control" id="serviceDate" required>
+            </div>
+            <div class="form-group">
+                <label for="additionalNotes">Ek Notlar</label>
+                <textarea class="form-control" id="additionalNotes" rows="3" placeholder="Ek bilgilerinizi buraya ekleyebilirsiniz."></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary">Kaydet</button>
+        </form>
+    </div>
+
+{% endblock %}
+```

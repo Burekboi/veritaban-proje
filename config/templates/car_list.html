@@ -1,0 +1,215 @@
+{% extends "base.html" %}
+{% block base %}
+<div class="text-center">
+    <button type="button" class="btn btn-primary " data-toggle="modal" data-target="#carModal">
+        Araç Oluştur
+    </button> 
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="deleteConfirmationModal" tabindex="-1" role="dialog" aria-labelledby="deleteConfirmationModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteConfirmationModalLabel">Araç Silme Onayı</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p>Silmek istediğinizden emin misiniz?</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Vazgeç</button>
+                <button type="button" class="btn btn-danger" id="deleteCarButton">Sil</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Araç oluşturma formu -->
+<!-- Modal -->
+<div class="modal fade" id="carModal" tabindex="-1" role="dialog" aria-labelledby="carModalLabel" aria-hidden="true">
+<div class="modal-dialog" role="document">
+<div class="modal-content">
+    <div class="modal-header">
+        <h5 class="modal-title" id="carModalLabel">Yeni Araç Oluştur</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">
+        <!-- Araç oluşturma formu -->
+        <form>
+            <div class="form-group">
+                <label for="carModel">Araç Modeli</label>
+                <input type="text" class="form-control" id="carModel" placeholder="Araç Modeli">
+            </div>
+            <div class="form-group">
+                <label for="carYear">Araç Yılı</label>
+                <input type="text" class="form-control" id="carYear" placeholder="Araç Yılı">
+            </div>
+            <div class="form-group">
+                <label for="carPrice">Fiyat</label>
+                <input type="number" class="form-control" id="carPrice" placeholder="Fiyat">
+            </div>
+            <div class="form-group">
+                <label for="carCondition">Durumu</label>
+                <select class="form-control" id="carCondition">
+                    <option value="new">Sıfır</option>
+                    <option value="used">İkinci El</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="carEngine">Motor Hacmi</label>
+                <input type="text" class="form-control" id="carEngine" placeholder="Motor Hacmi">
+            </div>
+            <div class="form-group">
+                <label for="carFuelType">Yakıt Türü</label>
+                <input type="text" class="form-control" id="carFuelType" placeholder="Yakıt Türü">
+            </div>
+            <div class="form-group">
+                <label for="carTransmission">Şanzıman Tipi</label>
+                <input type="text" class="form-control" id="carTransmission" placeholder="Şanzıman Tipi">
+            </div>
+            <div class="form-group">
+                <label for="carDriveSystem">Çekiş Sistemi</label>
+                <input type="text" class="form-control" id="carDriveSystem" placeholder="Çekiş Sistemi">
+            </div>
+            <div class="form-group">
+                <label for="carHorsepower">Beygir Gücü</label>
+                <input type="number" class="form-control" id="carHorsepower" placeholder="Beygir Gücü">
+            </div>
+            <button type="submit" class="btn btn-primary">Kaydet</button>
+        </form>
+    </div>
+</div>
+</div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="deleteConfirmationModal" tabindex="-1" role="dialog" aria-labelledby="deleteConfirmationModalLabel" aria-hidden="true">
+    <!-- Silme onay modalı içeriği buraya gelecek -->
+</div>
+
+<!-- Detay Modal -->
+{% for arac in araclar %}
+<div class="modal fade" id="carDetailModal{{ arac.id }}" tabindex="-1" role="dialog" aria-labelledby="carDetailModalLabel{{ arac.id }}" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="carDetailModalLabel{{ arac.id }}">Araç Detayları</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <!-- Detayları Gösteren İçerik -->
+                <div class="container">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <img src="{{ arac.resim }}" class="img-fluid" alt="{{ arac.marka }} {{ arac.model }}">
+                        </div>
+                        <div class="col-md-6">
+                            <h3>{{ arac.marka }} {{ arac.model }}</h3>
+                            <p><strong>Yıl:</strong> {{ arac.yil }}</p>
+                            <p><strong>Durum:</strong> {{ arac.durum }}</p>
+                            <p><strong>Motor Hacmi:</strong> {{ arac.motor_hacmi }}</p>
+                            <p><strong>Yakıt Türü:</strong> {{ arac.yakit_turu }}</p>
+                            <p><strong>Şanzıman Tipi:</strong> {{ arac.sanziman_tipi }}</p>
+                            <p><strong>Çekiş Sistemi:</strong> {{ arac.cekis_sistemi }}</p>
+                            <p><strong>Beygir Gücü:</strong> {{ arac.beygir }} Beygir Gücü</p>
+                            <p><strong>Fiyat:</strong> {{ arac.fiyat }} TL</p>
+                            <p><strong>Açıklama:</strong> {{ arac.aciklama }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Satın Al Modal -->
+<div class="modal fade" id="checkoutModal{{ arac.id }}" tabindex="-1" role="dialog" aria-labelledby="checkoutModalLabel{{ arac.id }}" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="checkoutModalLabel{{ arac.id }}">Satın Al</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <!-- Satın Alma Formu -->
+                <form>
+                    <!-- Form elemanları buraya eklenecek -->
+                    <div class="form-group">
+                        <label for="fullName">Adınız Soyadınız</label>
+                        <input type="text" class="form-control" id="fullName" placeholder="Adınız Soyadınız">
+                    </div>
+                    <div class="form-group">
+                        <label for="email">E-posta Adresiniz</label>
+                        <input type="email" class="form-control" id="email" placeholder="E-posta Adresiniz">
+                    </div>
+                    <div class="form-group">
+                        <label for="creditCard">Kredi Kartı Numaranız</label>
+                        <input type="number" class="form-control" id="creditCard" placeholder="Kredi Kartı Numaranız">
+                    </div>
+                    <!-- Diğer form elemanları buraya eklenecek -->
+                    <button type="submit" class="btn btn-primary">Satın Al</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endfor %}
+
+
+<!-- Ana Sayfa -->
+<div class="container mt-5">
+    <div class="row">
+        <!-- Diğer araç kartları buraya eklenebilir -->
+        {% for arac in araclar %}
+        <div class="col-md-4 mb-4">
+            <div class="card position-relative">
+                <img src="{{ arac.resim }}" class="card-img-top img-fluid mx-auto" alt="{{ arac.marka }} {{ arac.model }}" style="height: 200px; width: auto;">
+                <div class="card-body">
+                    <h5 class="card-title">{{ arac.marka }} {{ arac.model }}</h5>
+                    <p class="card-text">{{ arac.yil }} Model - {{ arac.durum }}</p>
+                    <p class="card-text">
+                        <strong>Motor Hacmi:</strong> {{ arac.motor_hacmi }}<br>
+                        <strong>Yakıt Türü:</strong> {{ arac.yakit_turu }}<br>
+                        <strong>Şanzıman Tipi:</strong> {{ arac.sanziman_tipi }}<br>
+                        <strong>Çekiş Sistemi:</strong> {{ arac.cekis_sistemi }}<br>
+                        <strong>Beygir Gücü:</strong> {{ arac.beygir }} Beygir Gücü<br>
+                        <strong>Fiyat:</strong> {{ arac.fiyat }} TL
+                    </p>
+                    <!-- Düzenle ve Sil butonları -->
+                    <div class="text-end">
+                        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#carDetailModal{{ arac.id }}">
+                            Detayları Görüntüle
+                        </button>
+                        <button type="button" class="btn btn-warning me-2">Düzenle</button>
+                        <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#deleteConfirmationModal">Sil</button>
+                        <span class="mt-5">
+                        <button type="button" class="btn btn-success d-block mt-2 w-100 mx-auto" data-toggle="modal" data-target="#checkoutModal{{ arac.id }}">
+                            Satın Al
+                        </button>
+                    </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<script>
+    // Silme işlemi onaylandığında gerçekleşecek işlemleri ekle
+    document.getElementById('deleteCarButton').addEventListener('click', function () {
+        // Buraya silme işlemi için gerekli JavaScript kodunu ekleyebilirsiniz
+        console.log('Araç silme işlemi gerçekleşti.');
+    });
+</script>
+
+{% endblock  %}
