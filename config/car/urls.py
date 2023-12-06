@@ -18,6 +18,7 @@ from django.contrib import admin
 from django.urls import path, include
 from .views.car_views import *
 from .views.car_service_views import *
+from .views.sales_view import *
 
 urlpatterns = [
     path("", CarList.as_view(), name="car_list"),
@@ -27,4 +28,7 @@ urlpatterns = [
     path("<int:pk>/delete/", CarDelete.as_view()),
 
     path("service/", ServiceCreate.as_view(), name="car_service_list"),
+    path("service_list/", ServiceList.as_view(), name="service_list"),
+
+    path("sales/", SalesList.as_view(), name="sales_list"),
 ]

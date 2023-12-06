@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+{% block base %}
+<div class="container mt-5">
+    <h2 class="text-center mb-4">Servis Kayıtları</h2>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Araba Marka</th>
+                <th>Araba Model</th>
+                <th>Servis Türü</th>
+                <th>Servis Tarihi</th>
+                <th>Ek Notlar</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for servis in servisler %}
+                <tr>
+                    <td>{{ servis.id }}</td>
+                    <td>{{ servis.arabaMarka }}</td>
+                    <td>{{ servis.arabaModel }}</td>
+                    <td>{{ servis.servisTuru }}</td>
+                    <td>{{ servis.servisTarihi }}</td>
+                    <td>{{ servis.ekNotlar }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock base %}

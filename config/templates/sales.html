@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+
+{% block base  %}
+<div class="container mt-5">
+    <h2 class="mb-4">Araba Satışları</h2>
+    <table class="table">
+        <thead>
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">Marka</th>
+                <th scope="col">Model</th>
+                <th scope="col">Satış Tarihi</th>
+                <th scope="col">Alıcı Adı</th>
+                <th scope="col">Fiyat</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <th scope="row">1</th>
+                <td>Ford</td>
+                <td>Mustang GT</td>
+                <td>2023-01-15</td>
+                <td>Ahmet Yılmaz</td>
+                <td>$50,000</td>
+            </tr>
+            <tr>
+                <th scope="row">2</th>
+                <td>Tesla</td>
+                <td>Model 3</td>
+                <td>2023-02-20</td>
+                <td>Merve Kaya</td>
+                <td>$45,000</td>
+            </tr>
+            <!-- Diğer satışlar buraya eklenebilir -->
+        </tbody>
+    </table>
+</div>
+{% endblock  %}
+
