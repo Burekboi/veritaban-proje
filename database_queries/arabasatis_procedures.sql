@@ -98,3 +98,14 @@ as begin
 	update dbo.users set deleted = 1 where id = @id;
 end;
 go
+
+
+-- araba satışı
+create or alter procedure dbo.delete_user
+	@user_id int,
+	@car_id int
+as begin
+	insert into dbo.car_user(user_id, car_id) values (@user_id, @car_id);
+	update dbo.car set is_sold = 1 where id = @car_id;
+end;
+go
