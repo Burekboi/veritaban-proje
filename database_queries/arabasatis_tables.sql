@@ -19,7 +19,7 @@ create table dbo.users (
 
 
 create table dbo.cars (
-	id int primary key not null,
+	id int identity primary key not null,
 	model varchar(50) not null,
 	year int not null constraint ck_cars_year check(year >= 1980 and year <= year(getdate())),
 	price int not null,
@@ -30,9 +30,9 @@ create table dbo.cars (
 	traction_type varchar(20) not null,
 	horse_power int not null,
 	is_sold bit constraint df_cars_is_sold default 0,
-	deleted bit constraint df_cars_deleted default 0
+	deleted bit constraint df_cars_deleted default 0,
+	img varchar(100) default ''
 );
-
 
 create table dbo.car_user (
 	id int primary key not null,
@@ -66,3 +66,7 @@ create table log.users(  -- kullan�c� loglar�
 	process varchar(4) constraint ck_log_users_process check(process in ('ADD', 'DEL', 'UPD')),
 	data datetime not null constraint df_log_users_data default getdate()
 );
+
+
+-- admin hesabı ekleme
+INSERT INTO dbo.users (name, surname, username, password, is_staff) SELECT 'admin', 'admin', 'admin', 'admin', 1 WHERE NOT EXISTS (SELECT 1 FROM dbo.users WHERE username = 'admin');

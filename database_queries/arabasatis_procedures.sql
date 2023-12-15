@@ -5,7 +5,7 @@ as begin
 end;
 go
 
-create or alter procedure dbo.add_car
+create procedure [dbo].[add_car]
 	@model varchar(50),
 	@year int,
 	@price int,
@@ -14,10 +14,11 @@ create or alter procedure dbo.add_car
 	@fuel_type varchar(20),
 	@gear_type varchar(20),
 	@traction_type varchar(20),
-	@horse_power int
+	@horse_power int,
+	@image varchar(100)
 as begin
-	insert into dbo.cars (model, year, price, state, engine_capacity, fuel_type, gear_type, traction_type, horse_power)
-		values (@model, @year, @price, @state, @engine_capacity, @fuel_type, @gear_type, @traction_type, @horse_power);
+	insert into dbo.cars (model, year, price, state, engine_capacity, fuel_type, gear_type, traction_type, horse_power, img)
+		values (@model, @year, @price, @state, @engine_capacity, @fuel_type, @gear_type, @traction_type, @horse_power, @image);
 end;
 go
 
