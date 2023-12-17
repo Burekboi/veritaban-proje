@@ -4,6 +4,13 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+
+        <script>
+            function logout() {
+                sessionStorage.clear();
+                window.location.href = "/login";
+            }
+        </script>
     </head>
         <body>
             <nav class="navbar navbar-expand-lg navbar-light bg-light">
@@ -17,19 +24,19 @@
                             <li class="nav-item active">
                                 <a class="nav-link" href="/">Ana Sayfa <span class="sr-only">(current)</span></a>
                             </li>
-                            <li class="nav-item">
+                            <li class="nav-item" staff='false' style='display: none;'>
                                 <a class="nav-link" href="{%url 'car_service_list' %}">Servis Hizmeti</a>
                             </li>
-                            <li class="nav-item">
+                            <li class="nav-item" staff='true' style='display: none;'>
                                 <a class="nav-link" href="{% url 'sales_list' %}">Satışlar</a>
                             </li>
-                            <li class="nav-item">
+                            <li class="nav-item"  staff='true' style='display: none;'>
                                 <a class="nav-link" href="{% url 'service_list' %}">Servis</a>
                             </li>
                         </ul>
                         <ul class="navbar-nav ml-auto">
                             <li class="nav-item">
-                                <a class="nav-link" href="{%url 'login' %}">Çıkış Yap</a>
+                                <a class="nav-link"  onclick="logout()">Çıkış Yap</a>
                             </li>
                         </ul>
                     </div>
@@ -43,4 +50,18 @@
         <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
         <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+
+        <script>
+            if (! sessionStorage.getItem('userInfo')) {
+                window.location.href = "{% url 'login' %}";
+            } else if (JSON.parse(sessionStorage.getItem('userInfo')).is_staff != 'False') {
+                document.querySelectorAll('[staff="true"]').forEach(function (el) {
+                    el.style.display = 'inline';
+                });
+            } else if (JSON.parse(sessionStorage.getItem('userInfo')).is_staff == 'False') {
+                document.querySelectorAll('[staff="false"]').forEach(function (el) {
+                    el.style.display = 'inline';
+                });
+            }
+        </script>
 </html>

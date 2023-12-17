@@ -51,18 +51,22 @@
                 </div>
                 <div class="modal-body">
                     <!-- Kayıt Olma Formu -->
-                    <form method="post" class="register-form" action="/">
+                    <form method="post" class="register-form" action="{% url 'register' %}">
                         {% csrf_token %}
+                        <div class="form-group">
+                            <label for="register-firstname">İsim:</label>
+                            <input type="text" class="form-control" id="register-firstname" name="register-firstname" placeholder="İsim" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="register-surname">Soyisim:</label>
+                            <input type="text" class="form-control" id="register-surname" name="register-surname" placeholder="Soyisim" required>
+                        </div>                        
                         <div class="form-group">
                             <label for="register-username">Kullanıcı Adı:</label>
                             <input type="text" class="form-control" id="register-username" name="register-username" placeholder="Kullanıcı Adı" required>
                         </div>
                         <div class="form-group">
                             <label for="register-password">Şifre:</label>
-                            <input type="password" class="form-control" id="register-password" name="register-password" placeholder="Şifre" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="register-password">Tekrar Şifre:</label>
                             <input type="password" class="form-control" id="register-password" name="register-password" placeholder="Şifre" required>
                         </div>
                         <button type="submit" class="btn btn-success btn-block">Kayıt Ol</button>
@@ -77,6 +81,34 @@
     <button type="button" class="btn btn-info btn-block mt-3" data-toggle="modal" data-target="#registerModal">Kayıt Ol</button>
     <!-- Kayıt Ol Butonu Sonu -->
 </div>
+    <script>
+        if(sessionStorage.getItem('userInfo')) {
+            window.location.href = '/';  // Eğer kullanıcı giriş yapmışsa anasayfaya yönlendir
+            console.log('{{ user.username }}')
+        }
+        else if ('{{ user.username }}' != '' && (! sessionStorage.getItem('userInfo'))){
+            console.log('{{ user.username }}');
+                        // Kullanıcı bilgilerini al
+            var id = '{{ user.id }}';
+            var username = '{{ user.username }}';  // Kullanıcı adını buradan almalısınız
+            var is_staff = '{{ user.is_staff }}';
+            var name = '{{ user.name }}';
+            var surname = '{{ user.surname }}';
+
+            // Kullanıcı bilgilerini bir nesne olarak oluştur
+            var userInfo = {
+                username: username,
+                is_staff: is_staff,
+                name: name,
+                surname: surname,
+                id: id
+            };
+
+            // Session storage'a bilgileri kaydet
+            sessionStorage.setItem('userInfo', JSON.stringify(userInfo));
+            window.location.href = '/';
+        }
+    </script>
 
 <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>

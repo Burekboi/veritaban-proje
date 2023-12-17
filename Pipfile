@@ -5,8 +5,8 @@ name = "pypi"
 
 [packages]
 django = "*"
-django-pyodbc-azure = "*"
 pyodbc = "*"
+mssql-django = "*"
 
 [dev-packages]
 

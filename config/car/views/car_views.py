@@ -1,110 +1,79 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.views import View
-
+from django.db import connection
+from django.http import JsonResponse
+import os
 
 class CarList(View):
     def get(self, request):
-        araclar = [
-    {
-        'id': 1,
-        'marka': 'Ford',
-        'model': 'Mustang GT Fastback',
-        'yil': 2022,
-        'durum': 'Sıfır',
-        'resim': 'https://www.log.com.tr/wp-content/uploads/2022/03/hayalleri-susleyecek-tamamen-elektrikli-ford-mustang-fastback-9.jpg',
-        'motor_hacmi': '5.0 L',
-        'yakit_turu': 'Benzin',
-        'sanziman_tipi': 'Manuel',
-        'cekis_sistemi': 'Arka Tekerlekten Çekiş',
-        'beygir': 450,
-        'fiyat': 750000  # Örnek bir fiyat, gerçek fiyatı kendi ihtiyaçlarınıza göre ayarlayabilirsiniz
-    },
-
-    {
-        'id': 2,
-        'marka': 'Tesla',
-        'model': 'Model 3',
-        'yil': 2023,
-        'durum': 'Sıfır',
-        'resim': 'https://www.tesla.com/sites/default/files/model3-new/social/model-3-hero-social.jpg',
-        'motor_hacmi': 'Elektrikli',
-        'yakit_turu': 'Elektrik',
-        'sanziman_tipi': 'Otomatik',
-        'cekis_sistemi': 'Dört Tekerlekten Çekiş',
-        'beygir': 450,
-        'fiyat': 1200000  # Örnek bir fiyat, gerçek fiyatı kendi ihtiyaçlarınıza göre ayarlayabilirsiniz
-    },
-    {
-        'id': 3,
-        'marka': 'Renault',
-        'model': 'Symbol',
-        'yil': 2014,
-        'durum': 'İkinci El',
-        'resim': 'https://i0.shbdn.com/photos/30/12/97/x5_11293012975iw.jpg',
-        'motor_hacmi': '1.5 L',
-        'yakit_turu': 'Dizel',
-        'sanziman_tipi': 'Manuel',
-        'cekis_sistemi': 'Ön Tekerlekten Çekiş',
-        'beygir': 90,
-        'fiyat': 80000  # Örnek bir fiyat, gerçek fiyatı kendi ihtiyaçlarınıza göre ayarlayabilirsiniz
-    }
-]
-
-
-
+        with connection.cursor() as cursor:
+            cursor.execute(
+                "EXEC get_cars"
+                )
+            result = cursor.fetchall()
+            cars = []
+            for row in result:
+                columns = [col[0] for col in cursor.description]
+                car_dict = {columns[i]: row[i] for i in range(len(columns))}
+                cars.append(car_dict)
+            cursor.execute(
+                "EXEC get_users"
+                )
+            result = cursor.fetchall()
         return render(request, 'car_list.html', {
-            'araclar': araclar
-        })
-    
-    def post(self, request):
-        return render(request, 'car_list.html', {
-
-        })
-
-
-class CarDetail(View):
-    def get(self, request, pk):
-        return render(request, 'car_detail.html', {
-
-        })
-    
-    def post(self, request):
-        return render(request, 'car_detail.html', {
-            
+            'araclar': cars,
         })
     
 
 class CarCreate(View):
-    def get(self, request):
-        return render(request, 'car_create.html', {
-
-        })
     
     def post(self, request):
-        return render(request, 'car_create.html', {
+        if request.method == 'POST':
+            model = request.POST.get('model')
+            year = request.POST.get('year')
+            price = request.POST.get('price')
+            state = request.POST.get('state')
+            engine_capacity = request.POST.get('engine_capacity')
+            fuel_type = request.POST.get('fuel_type')
+            gear_type = request.POST.get('gear_type')
+            traction_type = request.POST.get('traction_type')
+            horse_power = request.POST.get('horse_power')
+            image = request.FILES['image']
 
-        })
+        with open("media/" + self.request.FILES['image'].name, 'wb+') as destination:
+            for chunk in self.request.FILES['image'].chunks():
+                destination.write(chunk)
+
+        with connection.cursor() as cursor:
+                cursor.execute(
+                    "EXEC add_car @model=%s, @year=%s, @price=%s, @state=%s, @engine_capacity=%s, @fuel_type=%s, @gear_type=%s, @traction_type=%s, @horse_power=%s, @image=%s",
+                                [model, year, price, state, engine_capacity, fuel_type, gear_type, traction_type, horse_power, image.name]
+                                )
+                cursor.commit()
+        return redirect("car_list")
 
 
 class CarUpdate(View):
-    def get(self, request, pk):
-        return render(request, 'car_update.html', {
-
-        })
-    
-    def post(self, request):
-        return render(request, 'car_update.html', {
-
-        })
+    def post(self, request,id):
+        os.system("cls")
+        print(request)
+        print(request.POST)
+        with connection.cursor() as cursor:
+                cursor.execute(
+                    "EXEC upd_car @id=%s, @model=%s, @year=%s, @price=%s, @state=%s, @engine_capacity=%s, @fuel_type=%s, @gear_type=%s, @traction_type=%s, @horse_power=%s",
+                                [id, request.POST.get('model'), request.POST.get('year'), request.POST.get('price'), request.POST.get('state'), request.POST.get('engine_capacity'), request.POST.get('fuel_type'), request.POST.get('gear_type'), request.POST.get('traction_type'), request.POST.get('horse_power')]
+                                )
+                cursor.commit()
+        return redirect("car_list")
     
 
 class CarDelete(View):
-    def get(self, request, pk):
-        return render(request, 'car_delete.html', {
 
-        })
-    
-    def post(self, request):
-        return render(request, 'car_delete.html', {
-
-        })
+    def post(self, request,id):
+        print(id)
+        with connection.cursor() as cursor:
+                cursor.execute(
+                    f"EXEC delete_car @id={id}"
+                                )
+                cursor.commit()
+        return redirect("car_list")

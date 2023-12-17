@@ -1,13 +1,13 @@
 {% extends "base.html" %}
 {% block base %}
 <div class="text-center mt-3">
-    <button type="button" class="btn btn-primary " data-toggle="modal" data-target="#carModal">
+    <button id='add_car' type="button" class="btn btn-primary " data-toggle="modal" data-target="#carModal" style='display:none'>
         Araç Oluştur
     </button> 
 </div>
-
+{% for arac in araclar %}
 <!-- Modal -->
-<div class="modal fade" id="deleteConfirmationModal" tabindex="-1" role="dialog" aria-labelledby="deleteConfirmationModalLabel" aria-hidden="true">
+<div class="modal fade" id="deleteConfirmationModal{{ arac.id }}" tabindex="-1" role="dialog" aria-labelledby="deleteConfirmationModalLabel{{ arac.id }}" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -21,12 +21,15 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Vazgeç</button>
-                <button type="button" class="btn btn-danger" id="deleteCarButton">Sil</button>
+                <form method="post" action="{% url 'car_delete' id=arac.id %}">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-danger" id="deleteCarButton">Sil</button>
+                </form>
             </div>
         </div>
     </div>
 </div>
-
+{% endfor %}
 <!-- Araç oluşturma formu -->
 <!-- Modal -->
 <div class="modal fade" id="carModal" tabindex="-1" role="dialog" aria-labelledby="carModalLabel" aria-hidden="true">
@@ -40,45 +43,50 @@
     </div>
     <div class="modal-body">
         <!-- Araç oluşturma formu -->
-        <form>
+        <form  method="post" action="{% url 'car_create' %}" enctype="multipart/form-data">
+            {% csrf_token %}
             <div class="form-group">
                 <label for="carModel">Araç Modeli</label>
-                <input type="text" class="form-control" id="carModel" placeholder="Araç Modeli">
+                <input type="text" name="model" class="form-control" id="carModel" placeholder="Araç Modeli">
             </div>
             <div class="form-group">
                 <label for="carYear">Araç Yılı</label>
-                <input type="text" class="form-control" id="carYear" placeholder="Araç Yılı">
+                <input type="text" name="year" class="form-control" id="carYear" placeholder="Araç Yılı">
             </div>
             <div class="form-group">
                 <label for="carPrice">Fiyat</label>
-                <input type="number" class="form-control" id="carPrice" placeholder="Fiyat">
+                <input type="number" name="price" class="form-control" id="carPrice" placeholder="Fiyat">
             </div>
             <div class="form-group">
                 <label for="carCondition">Durumu</label>
-                <select class="form-control" id="carCondition">
+                <select class="form-control" id="carCondition" name="state">
                     <option value="new">Sıfır</option>
                     <option value="used">İkinci El</option>
                 </select>
             </div>
             <div class="form-group">
                 <label for="carEngine">Motor Hacmi</label>
-                <input type="text" class="form-control" id="carEngine" placeholder="Motor Hacmi">
+                <input type="text" name="engine_capacity"  class="form-control" id="carEngine" placeholder="Motor Hacmi">
             </div>
             <div class="form-group">
                 <label for="carFuelType">Yakıt Türü</label>
-                <input type="text" class="form-control" id="carFuelType" placeholder="Yakıt Türü">
+                <input type="text" name="fuel_type" class="form-control" id="carFuelType" placeholder="Yakıt Türü">
             </div>
             <div class="form-group">
                 <label for="carTransmission">Şanzıman Tipi</label>
-                <input type="text" class="form-control" id="carTransmission" placeholder="Şanzıman Tipi">
+                <input type="text" name="gear_type" class="form-control" id="carTransmission" placeholder="Şanzıman Tipi">
             </div>
             <div class="form-group">
                 <label for="carDriveSystem">Çekiş Sistemi</label>
-                <input type="text" class="form-control" id="carDriveSystem" placeholder="Çekiş Sistemi">
+                <input type="text" name="traction_type" class="form-control" id="carDriveSystem" placeholder="Çekiş Sistemi">
             </div>
             <div class="form-group">
                 <label for="carHorsepower">Beygir Gücü</label>
-                <input type="number" class="form-control" id="carHorsepower" placeholder="Beygir Gücü">
+                <input type="number" name="horse_power" class="form-control" id="carHorsepower" placeholder="Beygir Gücü">
+            </div>
+            <div class="form-group">
+                <label for="carImage">Araç Resmi</label>
+                <input type="file" accept="image/*" name="image" class="form-control" id="carImage" placeholder="Araç Resmi">
             </div>
             <button type="submit" class="btn btn-primary">Kaydet</button>
         </form>
@@ -108,22 +116,86 @@
                 <div class="container">
                     <div class="row">
                         <div class="col-md-6">
-                            <img src="{{ arac.resim }}" class="img-fluid" alt="{{ arac.marka }} {{ arac.model }}">
+                            <img src="media/{{ arac.img }}" class="img-fluid" alt="{{ arac.model }}">
                         </div>
                         <div class="col-md-6">
-                            <h3>{{ arac.marka }} {{ arac.model }}</h3>
-                            <p><strong>Yıl:</strong> {{ arac.yil }}</p>
-                            <p><strong>Durum:</strong> {{ arac.durum }}</p>
-                            <p><strong>Motor Hacmi:</strong> {{ arac.motor_hacmi }}</p>
-                            <p><strong>Yakıt Türü:</strong> {{ arac.yakit_turu }}</p>
-                            <p><strong>Şanzıman Tipi:</strong> {{ arac.sanziman_tipi }}</p>
-                            <p><strong>Çekiş Sistemi:</strong> {{ arac.cekis_sistemi }}</p>
-                            <p><strong>Beygir Gücü:</strong> {{ arac.beygir }} Beygir Gücü</p>
-                            <p><strong>Fiyat:</strong> {{ arac.fiyat }} TL</p>
-                            <p><strong>Açıklama:</strong> {{ arac.aciklama }}</p>
+                            <h3>{{ arac.model }}</h3>
+                            <p><strong>Yıl:</strong> {{ arac.year }}</p>
+                            <p><strong>Durum:</strong> {{ arac.state }}</p>
+                            <p><strong>Motor Hacmi:</strong> {{ arac.engine_capacity }}</p>
+                            <p><strong>Yakıt Türü:</strong> {{ arac.fuel_type }}</p>
+                            <p><strong>Şanzıman Tipi:</strong> {{ arac.gear_type }}</p>
+                            <p><strong>Çekiş Sistemi:</strong> {{ arac.traction_type }}</p>
+                            <p><strong>Beygir Gücü:</strong> {{ arac.horse_power }} Beygir Gücü</p>
+                            <p><strong>Fiyat:</strong> {{ arac.price }} TL</p>
                         </div>
                     </div>
                 </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Araç Düzenle Modalı -->
+<div class="modal fade" id="editCarModal" tabindex="-1" role="dialog" aria-labelledby="editCarModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editCarModalLabel">Araç Düzenle</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <!-- Araç düzenleme formu -->
+                <form method="post" action="{% url 'car_update' id=arac.id %}" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <!-- Burada düzenleme için gerekli alanları ekleyebilirsiniz -->
+                    <!-- Örneğin, gizli bir alan (hidden field) ile düzenlenen aracın ID'sini taşıyabilirsiniz -->
+                <!-- Diğer bütün form inputlarını oluşturup arac verileri ile doldurun -->
+                <div class="form-group">
+                    <label for="editCarModel">Araç Modeli</label>
+                    <input type="text" name="model" class="form-control" id="editCarModel" placeholder="Araç Modeli" value="{{ arac.model }}">
+                </div>
+                <div class="form-group">
+                    <label for="editCarYear">Yıl</label>
+                    <input type="number" name="year" class="form-control" id="editCarYear" placeholder="Yıl" value="{{ arac.year }}">
+                </div>
+                <div class="form-group">
+                    <label for="editCarPrice">Fiyat</label>
+                    <input type="number" name="price" class="form-control" id="editCarPrice" placeholder="Fiyat" value="{{ arac.price }}">
+                </div>
+                <div class="form-group">
+                    <label for="editCarState">Durumu</label>
+                    <select class="form-control" id="editCarState" name="state">
+                        <option value="new" {% if arac.state == 'new' %}selected{% endif %}>Sıfır</option>
+                        <option value="used" {% if arac.state == 'used' %}selected{% endif %}>İkinci El</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="editCarEngine">Motor Hacmi</label>
+                    <input type="text" name="engine_capacity" class="form-control" id="editCarEngine" placeholder="Motor Hacmi" value="{{ arac.engine_capacity }}">
+                </div>
+                <div class="form-group">
+                    <label for="editCarFuelType">Yakıt Türü</label>
+                    <input type="text" name="fuel_type" class="form-control" id="editCarFuelType" placeholder="Yakıt Türü" value="{{ arac.fuel_type }}">
+                </div>
+                <div class="form-group">
+                    <label for="editCarTransmission">Şanzıman Tipi</label>
+                    <input type="text" name="gear_type" class="form-control" id="editCarTransmission" placeholder="Şanzıman Tipi" value="{{ arac.gear_type }}">
+                </div>
+                <div class="form-group">
+                    <label for="editCarDriveSystem">Çekiş Sistemi</label>
+                    <input type="text" name="traction_type" class="form-control" id="editCarDriveSystem" placeholder="Çekiş Sistemi" value="{{ arac.traction_type }}">
+                </div>
+                <div class="form-group">
+                    <label for="editCarHorsepower">Beygir Gücü</label>
+                    <input type="number" name="horse_power" class="form-control" id="editCarHorsepower" placeholder="Beygir Gücü" value="{{ arac.horse_power }}">
+                </div>
+
+                    <!-- Diğer alanları da burada ekleyin -->
+                    <button type="submit" class="btn btn-primary">Kaydet</button>
+                </form>
             </div>
         </div>
     </div>
@@ -141,22 +213,40 @@
             </div>
             <div class="modal-body">
                 <!-- Satın Alma Formu -->
-                <form>
+                <form  method="post" action="{% url 'sales_create' %}">
+                    {% csrf_token %}
                     <!-- Form elemanları buraya eklenecek -->
                     <div class="form-group">
                         <label for="fullName">Adınız Soyadınız</label>
-                        <input type="text" class="form-control" id="fullName" placeholder="Adınız Soyadınız">
+                        <input type="text" name="fullName" class="form-control" id="fullName" placeholder="Adınız Soyadınız">
                     </div>
                     <div class="form-group">
                         <label for="email">E-posta Adresiniz</label>
-                        <input type="email" class="form-control" id="email" placeholder="E-posta Adresiniz">
+                        <input type="email" name="email" class="form-control" id="email" placeholder="E-posta Adresiniz">
                     </div>
                     <div class="form-group">
                         <label for="creditCard">Kredi Kartı Numaranız</label>
-                        <input type="number" class="form-control" id="creditCard" placeholder="Kredi Kartı Numaranız">
+                        <input type="number" name="creditCard" class="form-control" id="creditCard" placeholder="Kredi Kartı Numaranız">
                     </div>
+                    <input type="hidden" name="user_id" value="" id="user_id_input">
+                    
+                    <script>
+                        // JavaScript içinde Django değişkenini tanımla
+                        var aracId = {{ arac.id }};
+                        console.log(aracId);
+
+                        var checkoutModal = document.getElementById('checkoutModal' + aracId);
+                        console.log(checkoutModal);
+                        var userInfo = JSON.parse(sessionStorage.getItem('userInfo'));
+                        console.log(userInfo.id);
+                        var userIdInput = checkoutModal.querySelector('#user_id_input');
+                        userIdInput.value = userInfo.id;
+                    </script>
+
+                    <input type="hidden"  name="car_id" value="{{ arac.id }}" id="car_id_input">
                     <!-- Diğer form elemanları buraya eklenecek -->
-                    <button type="submit" class="btn btn-primary">Satın Al</button>
+                    <button type="submit"  class="btn btn-primary">Satın Al</button>
+
                 </form>
             </div>
         </div>
@@ -172,31 +262,45 @@
         {% for arac in araclar %}
         <div class="col-md-4 mb-4">
             <div class="card position-relative">
-                <img src="{{ arac.resim }}" class="card-img-top img-fluid mx-auto" alt="{{ arac.marka }} {{ arac.model }}" style="height: 200px; width: auto;">
+                <img src="media/{{ arac.img }}" class="card-img-top img-fluid mx-auto" alt="{{ arac.marka }} {{ arac.model }}" style="height: 200px; width: auto;">
                 <div class="card-body">
-                    <h5 class="card-title">{{ arac.marka }} {{ arac.model }}</h5>
-                    <p class="card-text">{{ arac.yil }} Model - {{ arac.durum }}</p>
+                    <h5 class="card-title">{{ arac.model }}</h5>
+                    {% if arac.state == "used" %}
+                    <p class="card-text">{{ arac.year }} Model - İkinci El</p>
+                    {% elif arac.state == "new" %}
+                    <p class="card-text">{{ arac.year }} Model - Sıfır</p>
+                    {% endif %}
+
                     <p class="card-text">
-                        <strong>Motor Hacmi:</strong> {{ arac.motor_hacmi }}<br>
-                        <strong>Yakıt Türü:</strong> {{ arac.yakit_turu }}<br>
-                        <strong>Şanzıman Tipi:</strong> {{ arac.sanziman_tipi }}<br>
-                        <strong>Çekiş Sistemi:</strong> {{ arac.cekis_sistemi }}<br>
-                        <strong>Beygir Gücü:</strong> {{ arac.beygir }} Beygir Gücü<br>
-                        <strong>Fiyat:</strong> {{ arac.fiyat }} TL
+                        <strong>Motor Hacmi:</strong> {{ arac.engine_capacity }} cm³<br>
+                        <strong>Yakıt Türü:</strong> {{ arac.fuel_type }}<br>
+                        <strong>Şanzıman Tipi:</strong> {{ arac.gear_type }}<br>
+                        <strong>Çekiş Sistemi:</strong> {{ arac.traction_type }}<br>
+                        <strong>Beygir Gücü:</strong> {{ arac.horse_power }} hp<br>
+                        <strong>Fiyat:</strong> {{ arac.price }} TL
                     </p>
                     <!-- Düzenle ve Sil butonları -->
                     <div class="text-end">
                         <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#carDetailModal{{ arac.id }}">
                             Detayları Görüntüle
                         </button>
-                        <button type="button" class="btn btn-warning me-2">Düzenle</button>
-                        <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#deleteConfirmationModal">Sil</button>
+                    <!-- Düzenleme düğmesi -->
+                    {% comment %} {% if user.is_staff == True %} {% endcomment %}
+                    <button type="button" staff='true' style='display: none !important;' class="btn btn-warning me-2" data-toggle="modal" data-target="#editCarModal" data-car-id="{{ arac.id }}" data-car-model="{{ arac.model }}" data-car-year="{{ arac.year }}" data-car-price="{{ arac.price }}" data-car-state="{{ arac.state }}" data-car-engine="{{ arac.engine_capacity }}" data-car-fuel="{{ arac.fuel_type }}" data-car-gear="{{ arac.gear_type }}" data-car-traction="{{ arac.traction_type }}" data-car-horsepower="{{ arac.horse_power }}"">
+                        Düzenle
+                    </button>
+                    <button type="button" staff='true' style='display: none' class="btn btn-danger" data-toggle="modal" data-target="#deleteConfirmationModal{{ arac.id }}">Sil</button>
                         <span class="mt-5">
-                        <button type="button" class="btn btn-success d-block mt-2 w-100 mx-auto" data-toggle="modal" data-target="#checkoutModal{{ arac.id }}">
+                            <button staff='true'style='display: none !important;' type="button" class="btn btn-success d-block mt-2 w-100 mx-auto" data-toggle="modal" data-target="#checkoutModal{{ arac.id }}">
+                                Satın Al
+                            </button>
+                        </span>
+                    {% comment %} {% else %} {% endcomment %}
+                        <button staff='false' style="width: 40%; display: none !important;" type="button" class="btn btn-success" data-toggle="modal" data-target="#checkoutModal{{ arac.id }}" data-car-id="{{ arac.id }}">
                             Satın Al
-                        </button>
-                    </span>
+                        </button> 
                     </div>
+                    {% comment %} {% endif %} {% endcomment %}
                 </div>
             </div>
         </div>
@@ -210,6 +314,67 @@
         // Buraya silme işlemi için gerekli JavaScript kodunu ekleyebilirsiniz
         console.log('Araç silme işlemi gerçekleşti.');
     });
+
+    
 </script>
+
+<script>
+    function openEditModal(id, model, year, price, state, engine, fuel, gear, traction, horsepower, image) {
+        var modal = document.getElementById('editCarModal');
+
+        // Modal içindeki alanları bul
+        var editCarId = modal.querySelector('#editCarId');
+        var editCarModel = modal.querySelector('#editCarModel');
+        var editCarYear = modal.querySelector('#editCarYear');
+        var editCarPrice = modal.querySelector('#editCarPrice');
+        var editCarCondition = modal.querySelector('#editCarCondition');
+        var editCarEngine = modal.querySelector('#editCarEngine');
+        var editCarFuelType = modal.querySelector('#editCarFuelType');
+        var editCarTransmission = modal.querySelector('#editCarTransmission');
+        var editCarDriveSystem = modal.querySelector('#editCarDriveSystem');
+        var editCarHorsepower = modal.querySelector('#editCarHorsepower');
+        var editCarImage = modal.querySelector('#editCarImage');
+
+        // Modal içindeki alanlara değerleri ata
+        editCarId.value = id;
+        editCarModel.value = model;
+        editCarYear.value = year;
+        editCarPrice.value = price;
+        editCarCondition.value = state;
+        editCarEngine.value = engine;
+        editCarFuelType.value = fuel;
+        editCarTransmission.value = gear;
+        editCarDriveSystem.value = traction;
+        editCarHorsepower.value = horsepower;
+        editCarImage.value = image;
+
+        // Modal'ı göster
+        modal.style.display = 'block';
+    }
+</script>
+
+
+
+
+
+
+<script>
+    console.log(JSON.parse(sessionStorage.getItem('userInfo')).is_staff);
+    if (JSON.parse(sessionStorage.getItem('userInfo')).is_staff != 'False') {
+        document.querySelectorAll('[staff="true"]').forEach(function (el) {
+            el.style.display = 'inline';
+        });
+        document.getElementById('add_car').style.display = 'inline-block';
+        // document.getElementById('car_edit').style.display = 'inline-block';
+        // document.getElementById('car_delete').style.display = 'inline-block';
+        // document.getElementById('buy_car_admin').style.display = 'inline-block';
+    } else {
+        document.querySelectorAll('[staff="false"]').forEach(function (el) {
+            el.style.display = 'inline';
+        });
+        // document.getElementById('buy_car_user').style.display = 'inline-block';
+    }
+</script>
+
 
 {% endblock  %}
