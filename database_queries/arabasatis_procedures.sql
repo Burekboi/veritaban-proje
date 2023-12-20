@@ -143,3 +143,16 @@ as begin
 	insert into dbo.services (arac_id, type, date, notes) values (@arac_id, @type, @date, @notes);
 end;
 go
+
+create   procedure [dbo].[get_sold_cars]
+	@user_id int = 0
+as begin
+	select u.id as 'user_id', (u.name + ' ' + u.surname) as 'username', cs.car_id as 'car_id', c.model as 'model', cs.price as 'price', cs.date as 'sold_date'
+		from dbo.car_sale as cs
+		left join dbo.users as u on u.id = cs.user_id
+		left join dbo.cars as c on c.id = cs.car_id
+		where (@user_id = 0) or (@user_id = cs.user_id);
+end;
+GO
+
+
