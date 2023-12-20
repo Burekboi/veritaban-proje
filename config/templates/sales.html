@@ -6,8 +6,7 @@
     <table class="table">
         <thead>
             <tr>
-                <th scope="col">#</th>
-                <th scope="col">Marka</th>
+                <th scope="col">id</th>
                 <th scope="col">Model</th>
                 <th scope="col">Satış Tarihi</th>
                 <th scope="col">Alıcı Adı</th>
@@ -15,23 +14,15 @@
             </tr>
         </thead>
         <tbody>
+            {% for sale in sales %}
             <tr>
-                <th scope="row">1</th>
-                <td>Ford</td>
-                <td>Mustang GT</td>
-                <td>2023-01-15</td>
-                <td>Ahmet Yılmaz</td>
-                <td>$50,000</td>
+                <td>{{ sale.id }}</td>
+                <td>{{ sale.car.model }}</td>
+                <td>{{ sale.date }}</td>
+                <td>{{ sale.user.name }} {{ sale.user.surname }}</td>
+                <td>{{ sale.price }} TL</td>
             </tr>
-            <tr>
-                <th scope="row">2</th>
-                <td>Tesla</td>
-                <td>Model 3</td>
-                <td>2023-02-20</td>
-                <td>Merve Kaya</td>
-                <td>$45,000</td>
-            </tr>
-            <!-- Diğer satışlar buraya eklenebilir -->
+            {% endfor %}
         </tbody>
     </table>
 </div>

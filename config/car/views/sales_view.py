@@ -7,18 +7,48 @@ class SalesList(View):
     def get(self, request):
         with connection.cursor() as cursor:
             cursor.execute(
-                "EXEC get_sales"
+                "EXEC dbo.get_car_sales"
                 )
             result = cursor.fetchone()
             sales = []
-            if result:
+            sales_dict = {}
+            if result != None:
                 columns = [col[0] for col in cursor.description]
                 sales_dict = {columns[i]: result[i] for i in range(min(len(columns), len(result)))}
                 sales.append(sales_dict)
-        return render(request, 'sales.html', {
-            "sales": sales
-        })
-    
+            if sales_dict != {}:
+                cursor.execute(
+                    "EXEC get_user_detail @id=%s",
+                    [sales_dict['user_id']]
+                    )
+                result = cursor.fetchall()
+            user = []
+            if result != None:
+                for row in result:
+                    columns = [col[0] for col in cursor.description]
+                    user_dict = {columns[i]: row[i] for i in range(len(columns))}
+                    user.append(user_dict)
+                    sales[0]['user'] = user[0]
+                    
+            if sales_dict != {}:
+                cursor.execute(
+                    "EXEC get_car_detail @id=%s",
+                    [sales_dict['car_id']]
+                    )
+                result = cursor.fetchall()
+            car = []
+            if result != None:
+                for row in result:
+                    columns = [col[0] for col in cursor.description]
+                    car_dict = {columns[i]: row[i] for i in range(len(columns))}
+                    car.append(car_dict)
+                    sales[0]['car'] = car[0]
+                print(sales)            
+            return render(request, 'sales.html', {
+                "sales": sales
+            })
+            
+            
 
 
 class SalesCreate(View):
@@ -30,10 +60,11 @@ class SalesCreate(View):
         car_id = request.POST.get('car_id')
         with connection.cursor() as cursor:
             cursor.execute(
-                "EXEC add_sales @name=%s, @email=%s, @creditCard=%s",
-                [name, email , creditCard]
+                "EXEC proc_car_sale @user_id=%s, @car_id=%s",
+                [user_id, car_id]
                 )
             cursor.commit()
+        print(name, email, creditCard, user_id, car_id)
 
         return redirect('car_list')
 

@@ -280,12 +280,17 @@
                         <strong>Fiyat:</strong> {{ arac.price }} TL
                     </p>
                     <!-- Düzenle ve Sil butonları -->
+                    <!-- Düzenleme düğmesi -->
+                    {% if arac.is_sold %}
+                    <p class="text-danger" style="font-size: 30px; margin-left: 90px; margin-top:20px;">
+                        SATILDI
+                    </p>
+                    
+                    {% else %}
                     <div class="text-end">
                         <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#carDetailModal{{ arac.id }}">
                             Detayları Görüntüle
                         </button>
-                    <!-- Düzenleme düğmesi -->
-                    {% comment %} {% if user.is_staff == True %} {% endcomment %}
                     <button type="button" staff='true' style='display: none !important;' class="btn btn-warning me-2" data-toggle="modal" data-target="#editCarModal" data-car-id="{{ arac.id }}" data-car-model="{{ arac.model }}" data-car-year="{{ arac.year }}" data-car-price="{{ arac.price }}" data-car-state="{{ arac.state }}" data-car-engine="{{ arac.engine_capacity }}" data-car-fuel="{{ arac.fuel_type }}" data-car-gear="{{ arac.gear_type }}" data-car-traction="{{ arac.traction_type }}" data-car-horsepower="{{ arac.horse_power }}"">
                         Düzenle
                     </button>
@@ -300,6 +305,7 @@
                             Satın Al
                         </button> 
                     </div>
+                    {% endif %}
                     {% comment %} {% endif %} {% endcomment %}
                 </div>
             </div>

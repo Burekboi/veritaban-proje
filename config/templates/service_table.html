@@ -6,23 +6,19 @@
     <table class="table">
         <thead>
             <tr>
-                <th>ID</th>
-                <th>Araba Marka</th>
                 <th>Araba Model</th>
+                <th>İsim Soyisim</th>
                 <th>Servis Türü</th>
-                <th>Servis Tarihi</th>
                 <th>Ek Notlar</th>
             </tr>
         </thead>
         <tbody>
             {% for servis in servisler %}
                 <tr>
-                    <td>{{ servis.id }}</td>
-                    <td>{{ servis.arabaMarka }}</td>
-                    <td>{{ servis.arabaModel }}</td>
-                    <td>{{ servis.servisTuru }}</td>
-                    <td>{{ servis.servisTarihi }}</td>
-                    <td>{{ servis.ekNotlar }}</td>
+                    <td>{{ servis.car_model }}</td>
+                    <td>{{ servis.user }}</td>
+                    <td>{{ servis.types }}</td>
+                    <td>{{ servis.notes }}</td>
                 </tr>
             {% endfor %}
         </tbody>

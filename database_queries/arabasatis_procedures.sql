@@ -5,7 +5,7 @@ as begin
 end;
 go
 
-create procedure [dbo].[add_car]
+create or alter procedure [dbo].[add_car]
 	@model varchar(50),
 	@year int,
 	@price int,
@@ -108,5 +108,38 @@ create or alter procedure dbo.delete_user
 as begin
 	insert into dbo.car_user(user_id, car_id) values (@user_id, @car_id);
 	update dbo.car set is_sold = 1 where id = @car_id;
+end;
+go
+
+
+create or alter procedure dbo.proc_car_sale
+	 @user_id int,
+	 @car_id int
+as begin
+	insert into dbo.car_sale (user_id, car_id, price) select top 1 @user_id, @car_id, price from dbo.cars where id = @car_id;
+end;
+go
+
+
+create or alter procedure dbo.get_services
+	@user_id int = 0
+as begin
+	select (u.name + ' ' + u.surname) as 'user', c.model as 'car_model', s.type as 'types', s.notes as 'notes'
+		from dbo.car_sale as cs
+			left join dbo.services as s on s.arac_id = cs.car_id
+			left join dbo.cars as c on c.id = cs.car_id
+			left join dbo.users as u on u.id = cs.user_id
+			where (@user_id = 0) or (@user_id != 0 and @user_id = cs.user_id);
+end;
+go
+
+
+create or alter procedure dbo.add_service
+	@arac_id int,
+	@type varchar(50),
+	@date date,
+	@notes varchar(100)
+as begin
+	insert into dbo.services (arac_id, type, date, notes) values (@arac_id, @type, @date, @notes);
 end;
 go

@@ -26,7 +26,7 @@ urlpatterns = [
     path("<int:id>/update/", CarUpdate.as_view(),name="car_update"),
     path("<int:id>/delete/", CarDelete.as_view(), name="car_delete"),
 
-    path("service/", ServiceCreate.as_view(), name="car_service_list"),
+    path("service-create/", ServiceCreate.as_view(), name="service_create"),
     path("service_list/", ServiceList.as_view(), name="service_list"),
 
     path("sales/", SalesList.as_view(), name="sales_list"),
