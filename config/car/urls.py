@@ -31,4 +31,6 @@ urlpatterns = [
 
     path("sales/", SalesList.as_view(), name="sales_list"),
     path("sales_create/", SalesCreate.as_view(), name="sales_create"),
+    path("sales_excel_convert/", ServiceExcelConvert.as_view(), name="sales_excel_convert"),
+    path("sales_excel_import/", ServiceExcelImport.as_view(), name="sales_excel_import"),
 ]

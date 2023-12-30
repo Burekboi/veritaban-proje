@@ -1,7 +1,13 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, HttpResponse
 from django.views import View
 from django.db import connection
 import os
+from datetime import datetime
+import pandas as pd
+import pyodbc
+import openpyxl
+
+
 
 
 class ServiceCreate(View):
@@ -31,13 +37,14 @@ class ServiceCreate(View):
         service_type = request.POST.get('service_type')
         service_date = request.POST.get('service_date')
         service_notes = request.POST.get('service_notes') 
+        
         print(service_car_id, service_type, service_date, service_notes)
         with connection.cursor() as cursor:
-            cursor.execute("exec dbo.add_service @arac_id=%s, @type='%s, @notes=%s, @date=%s",
-                [int(service_car_id), service_type, service_notes, str(service_date)]
+            cursor.execute("exec dbo.add_service @arac_id=%s, @type=%s, @date=%s,  @notes=%s",
+                [int(service_car_id), service_type, service_date, service_notes]
             )
             cursor.commit()
-        return redirect("service_list")
+        return redirect("car_list")
     
 
 class ServiceList(View):
@@ -60,3 +67,68 @@ class ServiceList(View):
             "servisler": servisler
         })
     
+
+class ServiceExcelConvert(View):
+    def get(self, request):
+        os.system("cls")
+        conn_str = 'DRIVER={ODBC Driver 17 for SQL Server};SERVER=localhost;DATABASE=arabasatis;Trusted_Connection=yes;'
+
+        # SQL verilerini bir DataFrame'e yükle
+        conn = pyodbc.connect(conn_str)
+        # cursor = conn.cursor()
+
+        # Stored procedure'ı çağırma
+        # cursor.execute("exec dbo.get_services")
+        sql_query = "exec dbo.get_services"
+
+        # Sonuçları al
+        # result = cursor.fetchall()
+
+        # Verileri al
+        data = pd.read_sql(sql_query, conn)
+
+        # Excel dosyasına yazma
+        excel_filename = 'output.xlsx'  # Kaydedilecek Excel dosyasının adı
+        data.to_excel(excel_filename, index=False)
+
+        # Bağlantıyı kapat
+        conn.close()
+
+        return render(request, 'service_table.html', {
+            "text": f'Excel dosyası {excel_filename} olarak kaydedildi.'
+        })
+    
+
+class ServiceExcelImport(View):
+     def post(self,reqeust):
+        os.system("cls")
+        excel_file = self.request.FILES.get('excel_file')
+        print(excel_file)
+        if excel_file:
+            # try:
+                # Veritabanına bağlantı kurma
+                connection = pyodbc.connect(
+                    'DRIVER={ODBC Driver 17 for SQL Server};'
+                    'SERVER=localhost;'
+                    'DATABASE=arabasatis;'
+                    'Trusted_Connection=yes;'
+                )
+                cursor = connection.cursor()
+
+                # Excel dosyasını okuma
+                df = pd.read_excel(excel_file)
+
+                # Veritabanına kaydetme işlemleri
+                for index, row in df.iterrows():
+                    print(row)
+                    cursor.execute("exec dbo.import_excel @user=?, @car_model=?, @types=?, @notes=?", 
+                                   row["user"], row['car_model'], row['types'], row['notes']
+                                   )
+
+                # Değişiklikleri kaydet ve bağlantıyı kapat
+                connection.commit()
+                connection.close()
+
+                return redirect('service_list')  # Başarıyla yüklendiyse başka bir sayfaya yönlendir
+            # except Exception as e:
+            #     return HttpResponse(f'Hata oluştu: {e}')        

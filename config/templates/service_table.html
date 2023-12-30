@@ -1,8 +1,26 @@
 {% extends "base.html" %}
 
 {% block base %}
+
+
 <div class="container mt-5">
-    <h2 class="text-center mb-4">Servis Kayıtları</h2>
+        <h2 class="text-center mb-4">Servis Kayıtları</h2>
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <div class="d-flex align-items-center">
+                <form id="uploadForm" method="post" action='{% url "sales_excel_import" %}' enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <input type="file" name="excel_file" id="fileInput" class="mr-2" accept=".xls, .xlsx" onchange="submitForm()">
+                </form>
+            </div>
+            <div>
+                <a class="btn btn-success" href="{% url 'sales_excel_convert' %}">Excel'e Aktar</a>
+            </div>
+        </div>
+        <script>
+            function submitForm() {
+                document.getElementById("uploadForm").submit();
+            }
+        </script>
     <table class="table">
         <thead>
             <tr>
@@ -24,4 +42,52 @@
         </tbody>
     </table>
 </div>
+
+{% if text %}
+    <!-- Excel Modal -->
+    <div class="modal fade" id="excelModal" tabindex="-1" role="dialog" aria-labelledby="excelModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="excelModalLabel">Excel'e Dönüştürüldü</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body" id="modalBody">
+                    <!-- Modal içeriği buraya gelecek -->
+                </div>
+                <div class="modal-footer">
+                    <a href="#"  class="btn btn-secondary"  onclick="closeModalAndRedirect()" data-dismiss="modal">Tamam</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Sayfa yüklendiğinde modalı aç
+            var modal = new bootstrap.Modal(document.getElementById('excelModal'));
+            modal.show();
+    
+            // Django view fonksiyonundan gelen metni al
+            var textFromDjango = "{{ text }}";
+            console.log(textFromDjango);
+            // Modalın içeriğine metni yerleştir
+            document.getElementById('modalBody').innerHTML = textFromDjango;
+        });
+    </script>
+
+    <script>
+        function closeModalAndRedirect() {
+            // Modalı kapat
+            var modal = new bootstrap.Modal(document.getElementById('excelModal'));
+            modal.hide();
+    
+            // Sayfaya yönlendir
+            window.location.href = "{% url 'service_list' %}";
+        }
+    </script>
+{% endif %}    
+
 {% endblock base %}

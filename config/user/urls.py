@@ -24,6 +24,7 @@ from django.conf.urls.static import static
 urlpatterns = [
     path("", login, name="login"),
     path("register/", UserCreateView.as_view(), name="register"),
+    path("users/", UsersTableView.as_view(), name="users_table"),
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

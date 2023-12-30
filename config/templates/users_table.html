@@ -1,0 +1,52 @@
+<!-- user_list.html -->
+
+{% extends "base.html" %}
+
+{% block base %}
+<div class="container mt-5">
+    <h2 class="text-center mb-4">Kullanıcı Listesi</h2>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>İsim</th>
+                <th>Soyisim</th>
+                <th>Kullanıcı Adı</th>
+                <th>Yetkili</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for user in users %}
+                <tr>
+                    <td>{{ user.id }}</td>
+                    <td>{{ user.name }}</td>
+                    <td>{{ user.surname }}</td>
+                    <td>{{ user.username }}</td>
+                    <td>
+                        {% if user.is_staff %}
+                            Açık
+                        {% else %}
+                            Kapalı
+                        {% endif %}
+                    </td>
+                    <td>
+                        <form method="post" action="{% url 'users_table' %}">
+                            {% csrf_token %}
+                            {% if user.is_staff %}
+                            <input type="hidden" name="user_id" value="{{ user.id }}">
+                            <input type="hidden" name="changing_staff" value="0">
+                            <button class="btn btn-danger" type="submit">Yetkiyi Sil</button>
+                            {% else %}
+                            <input type="hidden" name="changing_staff" value="1">
+                            <input type="hidden" name="user_id" value="{{ user.id }}">
+                            <button class="btn btn-success" type="submit">Yetki ver</button>
+                            {% endif %}
+                        </form>
+                        </button>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}
