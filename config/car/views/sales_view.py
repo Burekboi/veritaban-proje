@@ -5,11 +5,12 @@ import os
 
 
 class SalesList(View):
-    def get(self, request):
+    def get(self, request, pk, *args, **kwargs):
         os.system("cls")
+        print("pk:", self.kwargs.get('pk'))
         with connection.cursor() as cursor:
             cursor.execute(
-                "EXEC dbo.get_sold_cars @user_id=2"
+                "EXEC dbo.get_sold_cars"
                 )
             result = cursor.fetchall()
             sales = []

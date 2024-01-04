@@ -19,6 +19,7 @@ from django.urls import path, include
 from .views.car_views import *
 from .views.car_service_views import *
 from .views.sales_view import *
+from .views.car_logs_views import *
 
 urlpatterns = [
     path("", CarList.as_view(), name="car_list"),
@@ -26,11 +27,13 @@ urlpatterns = [
     path("<int:id>/update/", CarUpdate.as_view(),name="car_update"),
     path("<int:id>/delete/", CarDelete.as_view(), name="car_delete"),
 
-    path("service-create/", ServiceCreate.as_view(), name="service_create"),
+    path("service-create/<int:pk>/", ServiceCreate.as_view(), name="service_create"),
     path("service_list/", ServiceList.as_view(), name="service_list"),
 
     path("sales/", SalesList.as_view(), name="sales_list"),
     path("sales_create/", SalesCreate.as_view(), name="sales_create"),
     path("sales_excel_convert/", ServiceExcelConvert.as_view(), name="sales_excel_convert"),
     path("sales_excel_import/", ServiceExcelImport.as_view(), name="sales_excel_import"),
+
+    path("logs/", LogView.as_view(), name="logs"),
 ]

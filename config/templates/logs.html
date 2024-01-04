@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+
+{% block base %}
+<div class="container mt-5">
+    <h2>Log Tablosu</h2>
+
+
+    <table class="table table-bordered">
+      <thead>
+        <tr>
+          <th scope="col">Date</th>
+          <th scope="col">Level</th>
+          <th scope="col">CarID</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- Buraya loglar eklenecek -->
+        {% for log in logs  %}
+        <tr>
+          <td>{{ log.date }}</td>
+          <td>{{ log.process }}</td>
+          <td>{{ log.car_id }}</td>
+          <td>   <form method="post" action="{% url 'logs' %}">
+            {% csrf_token %}
+            {% if log.process == "DEL" %}
+            <input class="btn btn-danger mb-3" type="submit" value="Değişiklikleri Geri Al">
+            <input type="hidden" name="car_id" value="{{ log.car_id }}">
+            {% endif %}
+            </form></td>
+        </tr>
+        {% endfor %}
+        <!-- Ek loglar buraya eklenecek -->
+      </tbody>
+    </table>
+  </div>
+  
+{% endblock %}

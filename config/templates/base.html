@@ -25,7 +25,14 @@
                                 <a class="nav-link" href="/">Ana Sayfa <span class="sr-only">(current)</span></a>
                             </li>
                             <li class="nav-item" staff='false' style='display: none;'>
-                                <a class="nav-link" href="/service-create">Servis Hizmeti</a>
+                                <a class="nav-link" href="/service-create/">Servis Hizmeti</a>
+                                <script>
+                                    if (sessionStorage.getItem('userInfo')) {
+                                        user_id = JSON.parse(sessionStorage.getItem('userInfo')).id;
+                                        document.querySelector('[href="/service-create/"]').href = "/service-create/" + user_id;
+                                        console.log(document.querySelector('[href="/service-create/"]').href = "/service-create/" + user_id);
+                                    }
+                                </script>
                             </li>
                             <li class="nav-item" staff='true' style='display: none;'>
                                 <a class="nav-link" href="{% url 'sales_list' %}">Satışlar</a>
@@ -35,6 +42,9 @@
                             </li>
                             <li class="nav-item"  staff='true' style='display: none;'>
                                 <a class="nav-link" href="{% url 'users_table' %}">Kullanıcılar</a>
+                            </li>
+                            <li class="nav-item"  staff='true' style='display: none;'>
+                                <a class="nav-link" href="{% url 'logs' %}">Loglar</a>
                             </li>
                         </ul>
                         <ul class="navbar-nav ml-auto">

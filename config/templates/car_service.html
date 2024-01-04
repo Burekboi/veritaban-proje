@@ -2,7 +2,7 @@
 {% block base %}
     <div class="container mt-5">
         <h2 class="text-center mb-4">Araba Servisi Kayıt Formu</h2>
-        <form method="post" action="{% url 'service_create' %}">
+        <form method="post" action="{% url 'service_create' pk=pk %}">
             {% csrf_token %}
             <div class="form-group">
                     <label for="carModel">Araba Modeli</label>
@@ -12,7 +12,9 @@
                         <option value="{{ car.car_id }}">{{ car.model }}</option>
                         {% endfor %}
                     </select>
-            
+            <script>
+                 console.log(JSON.parse(sessionStorage.getItem('userInfo')).id);
+            </script>
             </div>
             <div class="form-group">
                 <label for="serviceType">Servis Türü</label>

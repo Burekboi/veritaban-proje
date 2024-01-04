@@ -12,11 +12,12 @@ import openpyxl
 
 class ServiceCreate(View):
     
-    def get(self, request):
+    def get(self, request, pk):
         os.system("cls")
+        print("pk:", self.kwargs.get('pk'))
         with connection.cursor() as cursor:
             cursor.execute(
-                "EXEC get_sold_cars @user_id=2",
+                f"EXEC get_sold_cars @user_id={self.kwargs.get('pk')}"
                 # [request.user.id]
                 )
             result = cursor.fetchall()
@@ -28,11 +29,13 @@ class ServiceCreate(View):
                 solded_cars.append(car_dict)
         print(solded_cars)
         return render(request, 'car_service.html', {
-            "solded_cars": solded_cars
+            "solded_cars": solded_cars,
+            "pk": self.kwargs.get('pk')
         })
 
-    def post(self, request):
+    def post(self, request, pk):
         os.system("cls")
+        print("pk:", self.kwargs.get('pk'))
         service_car_id = request.POST.get('service_model')
         service_type = request.POST.get('service_type')
         service_date = request.POST.get('service_date')
